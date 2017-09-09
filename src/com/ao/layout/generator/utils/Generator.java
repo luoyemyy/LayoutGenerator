@@ -53,8 +53,8 @@ public class Generator extends WriteCommandAction.Simple {
     private static final String template4 = "v.findViewById(%s).setOnClickListener(this);\n";
     private static final String template5 = "findViewById(%s).setOnClickListener(this);\n";
 
-    private static final String template6 = "public void initViewAndData() {%s}\n";
-    private static final String template7 = "public View initViewAndData(View v) { %s return v;}\n";
+    private static final String template6 = "@Override protected void initViewAndPresenter() {%s}\n";
+    private static final String template7 = "@Override protected View initViewAndPresenter(View v) { %s return v;}\n";
 
     private static final String template8 = "@Override public void onClick(View v) { %s }\n";
     private static final String template9 = "%s if(v.getId()==%s){}\n";
@@ -102,7 +102,7 @@ public class Generator extends WriteCommandAction.Simple {
 
         boolean f = mClass.getName().contains("Fragment");
 
-        PsiMethod[] methods = mClass.findMethodsByName("initViewAndData", false);
+        PsiMethod[] methods = mClass.findMethodsByName("initViewAndPresenter", false);
         String existBlock = null;
         if (methods.length > 0) {
             PsiCodeBlock codeBlock = methods[0].getBody();
@@ -115,7 +115,7 @@ public class Generator extends WriteCommandAction.Simple {
                         stringBuilder.append(statement.getText());
                     }
                 }
-                existBlock = "\n\n/***********new code************/\n\n" + stringBuilder.toString();
+                existBlock = "\n\n" + stringBuilder.toString();
             }
             methods[0].delete();
         }

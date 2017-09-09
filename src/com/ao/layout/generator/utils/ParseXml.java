@@ -141,8 +141,14 @@ public class ParseXml {
 
     private String getViewName(String value) {
         if (value.contains(".")) {
-            String[] strings = value.split(".");
-            return strings[strings.length - 1];
+            Logger.getInstance("ParseXml:144 ").info(value);
+            int i = value.lastIndexOf(".");
+//            String[] strings = value.split("^.$");
+            Logger.getInstance("ParseXml:146 ").info(i+"");
+//            for (String s : strings) {
+//                Logger.getInstance("ParseXml:148 ").info(s);
+//            }
+            return value.substring(i+1,value.length());
         } else {
             return value;
         }

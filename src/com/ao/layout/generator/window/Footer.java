@@ -47,6 +47,18 @@ public class Footer extends JPanel {
         confirm.setText("Confirm");
         confirm.setVisible(true);
 
+        JButton recycler = new JButton();
+        recycler.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listener.recycler();
+            }
+        });
+        recycler.setPreferredSize(new Dimension(120, 35));
+        recycler.setForeground(JBColor.blue);
+        recycler.setText("Recycler");
+        recycler.setVisible(true);
+
         setLayout(new BorderLayout());
 
         JPanel checkPanel = new JPanel();
@@ -56,6 +68,7 @@ public class Footer extends JPanel {
         JPanel btnPanel = new JPanel();
         btnPanel.add(cancel);
         btnPanel.add(confirm);
+        btnPanel.add(recycler);
 
         add(checkPanel, BorderLayout.WEST);
         add(btnPanel, BorderLayout.EAST);
@@ -65,6 +78,8 @@ public class Footer extends JPanel {
         void close();
 
         void sure();
+
+        void recycler();
 
         void allFind(boolean select);
 

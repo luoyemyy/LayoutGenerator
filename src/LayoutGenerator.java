@@ -1,5 +1,6 @@
 import com.ao.layout.generator.utils.Generator;
 import com.ao.layout.generator.utils.ParseXml;
+import com.ao.layout.generator.utils.RecyclerGenerator;
 import com.ao.layout.generator.view.View;
 import com.ao.layout.generator.window.Content;
 import com.ao.layout.generator.window.Footer;
@@ -80,6 +81,12 @@ public class LayoutGenerator extends BaseGenerateAction {
             }
 
             @Override
+            public void recycler() {
+                generatorRecycler();
+                close();
+            }
+
+            @Override
             public void allFind(boolean select) {
                 content.allFind(select);
             }
@@ -108,4 +115,7 @@ public class LayoutGenerator extends BaseGenerateAction {
         new Generator(mFile, mClass, mViews).execute();
     }
 
+    private void generatorRecycler(){
+        new RecyclerGenerator(mFile,mClass,mViews).execute();
+    }
 }
