@@ -36,7 +36,7 @@ public class RecyclerGenerator extends WriteCommandAction.Simple {
         new ReformatCodeProcessor(mProject, mClass.getContainingFile(), null, false).runWithoutProgress();
     }
 
-    private static final String template1 = "%s = (%s)itemView.findViewById(%s);\n";
+    private static final String template1 = "%s = itemView.findViewById(%s);\n";
     private static final String template2 = "public void inject(View itemView) {%s}\n";
 
 

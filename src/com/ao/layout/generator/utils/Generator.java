@@ -47,8 +47,8 @@ public class Generator extends WriteCommandAction.Simple {
         }
     }
 
-    private static final String template1 = "%s = (%s)v.findViewById(%s);\n";
-    private static final String template2 = "%s = (%s)findViewById(%s);\n";
+    private static final String template1 = "%s = v.findViewById(%s);\n";
+    private static final String template2 = "%s = findViewById(%s);\n";
     private static final String template3 = "%s.setOnClickListener(this);\n";
     private static final String template4 = "v.findViewById(%s).setOnClickListener(this);\n";
     private static final String template5 = "findViewById(%s).setOnClickListener(this);\n";
