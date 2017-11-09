@@ -16,6 +16,12 @@ public class RecyclerGenerator extends WriteCommandAction.Simple {
     private PsiClass mClass;
     private List<View> mViews;
     private PsiElementFactory mFactory;
+    private boolean isKotlin = true;
+
+    public RecyclerGenerator isKotlin(boolean isKotlin) {
+        this.isKotlin = isKotlin;
+        return this;
+    }
 
     public RecyclerGenerator(PsiFile mFile, PsiClass mClass, List<View> mViews) {
         super(mClass.getProject(), "generator recycler layout");
@@ -36,21 +42,28 @@ public class RecyclerGenerator extends WriteCommandAction.Simple {
         new ReformatCodeProcessor(mProject, mClass.getContainingFile(), null, false).runWithoutProgress();
     }
 
+    private static final String template0 = "%1$s %2$s;\n";
     private static final String template1 = "%s = itemView.findViewById(%s);\n";
+    private static final String k_template1 = "internal var %1$s: %2$s = itemView.findViewById(%3$s)\n";
     private static final String template2 = "public void inject(View itemView) {%s}\n";
+    private static final String k_template2 = "public fun inject(itemView: View) {%s}\n";
 
 
-    private String findBody(String template) {
+    private String findBody() {
         StringBuilder sb1 = new StringBuilder();
         StringBuilder sb2 = new StringBuilder();
         for (View view : mViews) {
             if (!view.isSelect()) {
                 continue;
             }
-            sb1.append(view.getViewName()).append(" ").append(view.getFieldName()).append(";\n");
-            sb2.append(String.format(template, view.getFieldName(), view.getViewName(), view.getFullId()));
+            if (isKotlin) {
+                sb2.append(String.format(k_template1, view.getFieldName(), view.getViewName(), view.getFullId()));
+            } else {
+                sb1.append(String.format(template0, view.getViewName(), view.getFieldName()));
+                sb2.append(String.format(template1, view.getFieldName(), view.getFullId()));
+            }
         }
-        return sb1.toString()+sb2.toString();
+        return sb1.toString() + sb2.toString();
     }
 
     private void generatorLayoutCode() {
@@ -59,7 +72,7 @@ public class RecyclerGenerator extends WriteCommandAction.Simple {
         if (methods.length > 0) {
             methods[0].delete();
         }
-        String body = findBody(template1);
-        mClass.add(mFactory.createMethodFromText(String.format(template2,body),mClass));
+        String body = findBody();
+        mClass.add(mFactory.createMethodFromText(String.format(isKotlin ? k_template2 : template2, body), mClass));
     }
 }

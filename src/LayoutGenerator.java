@@ -29,6 +29,8 @@ public class LayoutGenerator extends BaseGenerateAction {
     private PsiClass mClass;
     private PsiFile mFile;
 
+    private boolean isKotlin = true;
+
 
     public LayoutGenerator() {
         super(null);
@@ -95,6 +97,11 @@ public class LayoutGenerator extends BaseGenerateAction {
             public void allClick(boolean select) {
                 content.addClick(select);
             }
+
+            @Override
+            public void isKotlin(boolean isKotlin) {
+                LayoutGenerator.this.isKotlin = isKotlin;
+            }
         });
 
         Logger.getInstance("Generator").info("mDialog");
@@ -112,10 +119,10 @@ public class LayoutGenerator extends BaseGenerateAction {
     }
 
     private void generator() {
-        new Generator(mFile, mClass, mViews).execute();
+        new Generator(mFile, mClass, mViews).isKotlin(isKotlin).execute();
     }
 
-    private void generatorRecycler(){
-        new RecyclerGenerator(mFile,mClass,mViews).execute();
+    private void generatorRecycler() {
+        new RecyclerGenerator(mFile, mClass, mViews).isKotlin(isKotlin).execute();
     }
 }

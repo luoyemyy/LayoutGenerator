@@ -17,6 +17,12 @@ public class Generator extends WriteCommandAction.Simple {
     private List<View> mViews;
     private PsiElementFactory mFactory;
     private boolean click;
+    private boolean isKotlin = true;
+
+    public Generator isKotlin(boolean isKotlin) {
+        this.isKotlin = isKotlin;
+        return this;
+    }
 
     public Generator(PsiFile mFile, PsiClass mClass, List<View> mViews) {
         super(mClass.getProject(), "generator layout");
@@ -43,31 +49,39 @@ public class Generator extends WriteCommandAction.Simple {
             if (!view.isSelect()) {
                 continue;
             }
-            mClass.add(mFactory.createFieldFromText("private " + view.getViewName() + " " + view.getFieldName() + ";", mClass));
+            mClass.add(mFactory.createFieldFromText(String.format(isKotlin ? k_template0 : template0, view.getViewName(), view.getFieldName()), mClass));
         }
     }
 
-    private static final String template1 = "%s = v.findViewById(%s);\n";
-    private static final String template2 = "%s = findViewById(%s);\n";
-    private static final String template3 = "%s.setOnClickListener(this);\n";
-    private static final String template4 = "v.findViewById(%s).setOnClickListener(this);\n";
-    private static final String template5 = "findViewById(%s).setOnClickListener(this);\n";
+    private static final String template0 = "private %1$s %2$s;\n";
+    private static final String k_template0 = "private lateinit %2$s: %1$s\n";
 
-    private static final String template6 = "@Override protected void initViewAndPresenter() {%s}\n";
-    private static final String template7 = "@Override protected View initViewAndPresenter(View v) { %s return v;}\n";
 
-    private static final String template8 = "@Override public void onClick(View v) { %s }\n";
-    private static final String template9 = "%s if(v.getId()==%s){}\n";
+    private static final String template1_f = "%s = v.findViewById(%s);\n";
+    private static final String template1_a = "%s = findViewById(%s);\n";
+    private static final String template2 = "%s.setOnClickListener(this);\n";
+    private static final String template3_f = "v.findViewById(%s).setOnClickListener(this);\n";
+    private static final String template3_a = "findViewById(%s).setOnClickListener(this);\n";
+
+    private static final String template4_a = "@Override protected void initViewAndPresenter() {%s}\n";
+    private static final String k_template4_a = "override fun initViewAndPresenter() {%s}\n";
+    private static final String template4_f = "@Override protected View initViewAndPresenter(View v) { %s return v;}\n";
+    private static final String k_template4_f = "override fun initViewAndPresenter(v: View): View { %s return v}\n";
+
+    private static final String template5 = "@Override public void onClick(View v) { %s }\n";
+    private static final String k_template5 = "override fun onClick(v: View) { %s }\n";
+    private static final String template6 = "%s if(v.getId()==%s){}\n";
+    private static final String k_template6 = "%s if(v.id==%s){}\n";
 
     private void fragment(String existBlock) {
-        String findBody = findBody(template1) + clickBody(template4) + (existBlock == null ? "" : existBlock);
-        String methodString = String.format(template7, findBody);
+        String findBody = findBody(template1_f) + clickBody(template3_f) + (existBlock == null ? "" : existBlock);
+        String methodString = String.format(isKotlin ? k_template4_f : template4_f, findBody);
         mClass.add(mFactory.createMethodFromText(methodString, mClass));
     }
 
     private void activity(String existBlock) {
-        String findBody = findBody(template2) + clickBody(template5) + (existBlock == null ? "" : existBlock);
-        String methodString = String.format(template6, findBody);
+        String findBody = findBody(template1_a) + clickBody(template3_a) + (existBlock == null ? "" : existBlock);
+        String methodString = String.format(isKotlin ? k_template4_a : template4_a, findBody);
         mClass.add(mFactory.createMethodFromText(methodString, mClass));
     }
 
@@ -77,7 +91,7 @@ public class Generator extends WriteCommandAction.Simple {
             if (!view.isSelect()) {
                 continue;
             }
-            sb.append(String.format(template, view.getFieldName(), view.getViewName(), view.getFullId()));
+            sb.append(String.format(template, view.getFieldName(), view.getFullId()));
         }
         return sb.toString();
     }
@@ -90,7 +104,7 @@ public class Generator extends WriteCommandAction.Simple {
             }
             click = true;
             if (view.isSelect()) {
-                sb.append(String.format(template3, view.getFieldName()));
+                sb.append(String.format(template2, view.getFieldName()));
             } else {
                 sb.append(String.format(template, view.getFullId()));
             }
@@ -144,9 +158,9 @@ public class Generator extends WriteCommandAction.Simple {
             } else {
                 hasElse = true;
             }
-            sb.append(String.format(template9, args1, view.getFullId()));
+            sb.append(String.format(isKotlin ? k_template6 : template6, args1, view.getFullId()));
         }
-        String clickMethodString = String.format(template8, sb.toString());
+        String clickMethodString = String.format(isKotlin ? k_template5 : template5, sb.toString());
         mClass.add(mFactory.createMethodFromText(clickMethodString, mClass));
     }
 }

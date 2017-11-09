@@ -19,9 +19,16 @@ public class Footer extends JPanel {
         );
 
         JCheckBox allClick = new JCheckBox("all click");
-        allClick.setPreferredSize(new Dimension(100, 26));
+        allClick.setPreferredSize(new Dimension(75, 26));
         allClick.addChangeListener(e ->
                 listener.allClick(allClick.isSelected())
+        );
+
+        JCheckBox kotlinClick = new JCheckBox("kotlin");
+        kotlinClick.setPreferredSize(new Dimension(100, 26));
+        kotlinClick.setSelected(true);
+        kotlinClick.addChangeListener(e ->
+                listener.isKotlin(kotlinClick.isSelected())
         );
 
         JButton cancel = new JButton();
@@ -31,8 +38,8 @@ public class Footer extends JPanel {
                 listener.close();
             }
         });
-        cancel.setPreferredSize(new Dimension(120, 35));
-        cancel.setText("Cancel");
+        cancel.setPreferredSize(new Dimension(100, 35));
+        cancel.setText("cancel");
         cancel.setVisible(true);
 
         JButton confirm = new JButton();
@@ -42,9 +49,9 @@ public class Footer extends JPanel {
                 listener.sure();
             }
         });
-        confirm.setPreferredSize(new Dimension(120, 35));
+        confirm.setPreferredSize(new Dimension(100, 35));
         confirm.setForeground(JBColor.blue);
-        confirm.setText("Confirm");
+        confirm.setText("confirm");
         confirm.setVisible(true);
 
         JButton recycler = new JButton();
@@ -54,9 +61,9 @@ public class Footer extends JPanel {
                 listener.recycler();
             }
         });
-        recycler.setPreferredSize(new Dimension(120, 35));
+        recycler.setPreferredSize(new Dimension(100, 35));
         recycler.setForeground(JBColor.blue);
-        recycler.setText("Recycler");
+        recycler.setText("recycler");
         recycler.setVisible(true);
 
         setLayout(new BorderLayout());
@@ -84,5 +91,7 @@ public class Footer extends JPanel {
         void allFind(boolean select);
 
         void allClick(boolean select);
+
+        void isKotlin(boolean isKotlin);
     }
 }
